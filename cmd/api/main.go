@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 
 	"github.com/make-smart-products/requests-api/internal/auth"
 	"github.com/make-smart-products/requests-api/internal/config"
@@ -42,6 +43,13 @@ func main() {
 	api := handler.NewAPI(svc)
 
 	router := chi.NewRouter()
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:5173", "http://127.0.0.1:5173"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}))
 	router.Use(chimw.RequestID)
 	router.Use(chimw.RealIP)
 	router.Use(chimw.Logger)

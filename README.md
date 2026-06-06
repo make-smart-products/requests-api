@@ -1,10 +1,14 @@
 # Requests API
 
-Backend личного кабинета клиентов на **Go + SQLite**.
+Backend + frontend личного кабинета клиентов.
+
+- **Backend:** Go + SQLite
+- **Frontend:** React + Vite + TypeScript (`frontend/`)
 
 ## Возможности
 
 - REST API: авторизация, профиль, заявки, уведомления
+- Web UI: логин, регистрация, заявки, профиль, уведомления
 - Роли: `client`, `manager`, `admin`
 - Email/SMS/in-app уведомления
 - JWT-аутентификация
@@ -20,7 +24,19 @@ go mod tidy
 go run ./cmd/api
 ```
 
-Сервер: `http://localhost:8080`
+Сервер API: `http://localhost:8080`
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+UI: `http://localhost:5173`
+
+Подробнее: [frontend/README.md](frontend/README.md)
 
 ## Примеры запросов
 
@@ -66,18 +82,8 @@ internal/handler/        — HTTP handlers
 internal/service/        — бизнес-логика
 internal/repository/     — SQLite
 internal/notification/   — email/SMS
+frontend/                — React UI
 docs/                    — документация
-```
-
-## Push в GitHub
-
-```bash
-git init
-git add .
-git commit -m "feat: initial Go backend for client cabinet"
-git branch -M main
-git remote add origin https://github.com/make-smart-products/requests-api.git
-git push -u origin main
 ```
 
 ## Лицензия
