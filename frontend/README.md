@@ -4,6 +4,18 @@ React + Vite + TypeScript UI для Requests API.
 
 ## Запуск
 
+### Docker (рекомендуется)
+
+Из корня репозитория:
+
+```bash
+docker compose up --build
+```
+
+UI: http://localhost:3000
+
+### Локально (dev)
+
 ```bash
 # Терминал 1 — backend
 cd ..
@@ -15,7 +27,7 @@ npm install
 npm run dev
 ```
 
-Откройте http://localhost:5173
+UI: http://localhost:5173
 
 ## Страницы
 

@@ -14,17 +14,40 @@ Backend + frontend личного кабинета клиентов.
 - JWT-аутентификация
 - Документация: [docs/API.md](docs/API.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-## Быстрый старт
+## Быстрый старт (Docker — одна команда)
+
+Требуется [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 
 ```bash
 git clone https://github.com/make-smart-products/requests-api.git
 cd requests-api
+docker compose up --build
+```
+
+Откройте **http://localhost:3000**
+
+Логин: `admin@requests.local` / `admin12345`
+
+Остановка: `Ctrl+C` или `docker compose down`
+
+Опционально — свой JWT-секрет:
+
+```bash
+cp .env.docker.example .env
+docker compose up --build
+```
+
+## Локальная разработка
+
+### Backend
+
+```bash
 cp .env.example .env
 go mod tidy
 go run ./cmd/api
 ```
 
-Сервер API: `http://localhost:8080`
+API: `http://localhost:8080`
 
 ### Frontend
 
@@ -83,6 +106,7 @@ internal/service/        — бизнес-логика
 internal/repository/     — SQLite
 internal/notification/   — email/SMS
 frontend/                — React UI
+docker-compose.yml       — запуск API + UI
 docs/                    — документация
 ```
 

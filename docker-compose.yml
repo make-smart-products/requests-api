@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      HTTP_ADDR: ":8080"
+      DB_PATH: /app/data/requests.db
+      JWT_SECRET: ${JWT_SECRET:-docker-dev-secret-change-me}
+      APP_ENV: production
+      SMS_PROVIDER: log
+    volumes:
+      - api-data:/app/data
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  api-data:
