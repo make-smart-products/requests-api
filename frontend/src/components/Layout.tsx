@@ -19,6 +19,9 @@ export function Layout() {
         <nav className="nav">
           <NavLink to="/" end>Обзор</NavLink>
           <NavLink to="/applications">Заявки</NavLink>
+          {(user?.role === 'admin' || user?.role === 'manager') && (
+            <NavLink to="/users">Пользователи</NavLink>
+          )}
           <NavLink to="/profile">Профиль</NavLink>
           <NavLink to="/notifications">Уведомления</NavLink>
         </nav>

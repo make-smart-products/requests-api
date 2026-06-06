@@ -1,11 +1,16 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { api } from '../api/client'
+import { FiltersBar } from '../components/FiltersBar'
 import { useAuth } from '../context/AuthContext'
 import type { Application, ApplicationStatus } from '../types'
 import { statusClass, statusLabels } from '../utils/labels'
+import { matchesSearch } from '../utils/search'
 
 const clientStatuses: ApplicationStatus[] = ['draft', 'submitted']
 const managerStatuses: ApplicationStatus[] = ['in_review', 'approved', 'rejected']
+const allStatuses: ApplicationStatus[] = [
+  'draft', 'submitted', 'in_review', 'approved', 'rejected',
+]
 
 export function ApplicationsPage() {
   const { user } = useAuth()
@@ -13,19 +18,32 @@ export function ApplicationsPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<ApplicationStatus | ''>('')
   const [form, setForm] = useState({ title: '', description: '', status: 'draft' as ApplicationStatus })
 
-  function load() {
+  function load(status?: ApplicationStatus) {
     setLoading(true)
-    api.listApplications()
+    api.listApplications(status)
       .then(setApplications)
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false))
   }
 
   useEffect(() => {
-    load()
-  }, [])
+    load(statusFilter || undefined)
+  }, [statusFilter])
+
+  const filteredApplications = useMemo(
+    () => applications.filter((app) => matchesSearch(search, [
+      app.title,
+      app.description,
+      app.id,
+      app.user_id,
+      statusLabels[app.status],
+    ])),
+    [applications, search],
+  )
 
   async function handleCreate(event: FormEvent) {
     event.preventDefault()
@@ -34,7 +52,7 @@ export function ApplicationsPage() {
       await api.createApplication(form)
       setForm({ title: '', description: '', status: 'draft' })
       setShowForm(false)
-      load()
+      load(statusFilter || undefined)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка создания')
     }
@@ -44,7 +62,7 @@ export function ApplicationsPage() {
     setError('')
     try {
       await api.updateApplication(app.id, { status })
-      load()
+      load(statusFilter || undefined)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка обновления')
     }
@@ -54,7 +72,7 @@ export function ApplicationsPage() {
     setError('')
     try {
       await api.deleteApplication(id)
-      load()
+      load(statusFilter || undefined)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка удаления')
     }
@@ -77,6 +95,25 @@ export function ApplicationsPage() {
       </header>
 
       {error && <div className="alert alert-error">{error}</div>}
+
+      <FiltersBar
+        search={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Заголовок, описание, ID"
+      >
+        <label>
+          Статус
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as ApplicationStatus | '')}
+          >
+            <option value="">Все статусы</option>
+            {allStatuses.map((status) => (
+              <option key={status} value={status}>{statusLabels[status]}</option>
+            ))}
+          </select>
+        </label>
+      </FiltersBar>
 
       {showForm && (
         <form className="card form-card" onSubmit={handleCreate}>
@@ -113,8 +150,8 @@ export function ApplicationsPage() {
 
       {loading ? (
         <p className="muted">Загрузка…</p>
-      ) : applications.length === 0 ? (
-        <div className="card empty-state">Заявок пока нет</div>
+      ) : filteredApplications.length === 0 ? (
+        <div className="card empty-state">Заявки не найдены</div>
       ) : (
         <div className="table-card">
           <table>
@@ -122,19 +159,21 @@ export function ApplicationsPage() {
               <tr>
                 <th>ID</th>
                 <th>Заголовок</th>
+                <th>Клиент</th>
                 <th>Статус</th>
                 <th>Дата</th>
                 <th>Действия</th>
               </tr>
             </thead>
             <tbody>
-              {applications.map((app) => (
+              {filteredApplications.map((app) => (
                 <tr key={app.id}>
                   <td>#{app.id}</td>
                   <td>
                     <strong>{app.title}</strong>
                     <p className="muted">{app.description}</p>
                   </td>
+                  <td>#{app.user_id}</td>
                   <td>
                     <span className={`badge ${statusClass[app.status]}`}>
                       {statusLabels[app.status]}

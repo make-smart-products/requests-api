@@ -368,6 +368,25 @@ th {
   color: var(--muted);
 }
 
+.filters-bar {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.filters-bar label,
+.search-field {
+  margin-bottom: 0;
+}
+
+.search-field span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
 @media (max-width: 900px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -384,5 +403,9 @@ th {
 
   .main {
     padding: 20px;
+  }
+
+  .filters-bar {
+    grid-template-columns: 1fr;
   }
 }

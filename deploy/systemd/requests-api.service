@@ -1,0 +1,15 @@
+[Unit]
+Description=Requests API
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/requests-api
+EnvironmentFile=/opt/requests-api/.env
+ExecStart=/opt/requests-api/api
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

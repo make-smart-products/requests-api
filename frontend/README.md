@@ -34,9 +34,17 @@ UI: http://localhost:5173
 - `/login` — вход
 - `/register` — регистрация клиента
 - `/` — обзор
-- `/applications` — заявки
+- `/applications` — заявки (фильтры, поиск)
+- `/users` — пользователи (admin, manager)
 - `/profile` — профиль
 - `/notifications` — уведомления
+
+## Деплой
+
+- **Vercel:** root = `frontend`, env `VITE_API_URL=https://api.example.com`
+- **Netlify:** base = `frontend`, env `VITE_API_URL=https://api.example.com`
+
+Подробнее: [../docs/DEPLOY.md](../docs/DEPLOY.md)
 
 ## Тестовый вход
 

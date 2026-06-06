@@ -61,6 +61,10 @@ UI: `http://localhost:5173`
 
 Подробнее: [frontend/README.md](frontend/README.md)
 
+## Деплой (VPS + Vercel/Netlify)
+
+См. [docs/DEPLOY.md](docs/DEPLOY.md)
+
 ## Примеры запросов
 
 ```bash
