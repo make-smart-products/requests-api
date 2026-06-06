@@ -1,0 +1,11 @@
+*.exe
+*.db
+*.sqlite
+*.sqlite3
+.env
+data/
+bin/
+dist/
+.idea/
+.vscode/
+*.log
